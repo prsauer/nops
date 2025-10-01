@@ -1,12 +1,14 @@
 {
-  "name": "nops",
-  "version": "1.0.0",
+  "name": "wnops",
+  "version": "1.0.1",
   "main": "index.js",
   "license": "MIT",
   "files": [
     "index.js",
     "index.d.ts",
-    "src/**/*",
+    "src/**/*.cpp",
+    "src/**/*.h",
+    "src/**/*.hpp",
     "dist/**/*"
   ],
   "engines": {
