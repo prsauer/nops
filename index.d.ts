@@ -14,21 +14,21 @@ export interface WindowInfo {
 
 /**
  * Retrieves a list of all running process executable names.
- * @returns An array of strings, where each string is the full path to a running process.
+ * @returns A promise that resolves to an array of strings, where each string is the full path to a running process.
  */
-export function GetAllProcessNames(): string[]
+export function GetAllProcessNames(): Promise<string[]>
 
 /**
  * Retrieves information about all main application windows.
- * @returns An array of WindowInfo objects for each main application window.
+ * @returns A promise that resolves to an array of WindowInfo objects for each main application window.
  */
-export function GetAppWindowNames(): WindowInfo[]
+export function GetAppWindowNames(): Promise<WindowInfo[]>
 
 /**
  * Retrieves information about all visible windows.
- * @returns An array of WindowInfo objects for each visible window.
+ * @returns A promise that resolves to an array of WindowInfo objects for each visible window.
  */
-export function GetAllWindowNames(): WindowInfo[]
+export function GetAllWindowNames(): Promise<WindowInfo[]>
 
 /**
  * Sets the global log level for the native module. Logs to console.

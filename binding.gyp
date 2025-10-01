@@ -5,7 +5,8 @@
         "cflags_cc!": [ "-fno-exceptions" ],
         "sources": [
             "src/main.cpp",
-            "src/wincalls.cpp"
+            "src/wincalls.cpp",
+            "src/workers.cpp"
         ],
         'include_dirs': [
             "<!@(node -p \"require('node-addon-api').include\")",

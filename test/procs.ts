@@ -1,8 +1,8 @@
 import nops from '../index'
 
-async function TestGetAllProcessNames() {
+async function testGetAllProcessNames() {
   const start = process.hrtime.bigint()
-  const procs = nops.GetAllProcessNames()
+  const procs = await nops.GetAllProcessNames()
   const end = process.hrtime.bigint()
   const duration = Number(end - start) / 1000000
   console.log(`Test enumerating all processes: ${duration}ms`)
@@ -10,9 +10,9 @@ async function TestGetAllProcessNames() {
   console.log('Test Done')
 }
 
-function testGetAppWindowNames() {
+async function testGetAppWindowNames() {
   const start = process.hrtime.bigint()
-  const windows = nops.GetAppWindowNames()
+  const windows = await nops.GetAppWindowNames()
   const end = process.hrtime.bigint()
   const duration = Number(end - start) / 1000000
   console.log(`Test enumerating all app windows: ${duration}ms`)
@@ -20,9 +20,9 @@ function testGetAppWindowNames() {
   console.log('Test Done')
 }
 
-function testGetAllWindowNames() {
+async function testGetAllWindowNames() {
   const start = process.hrtime.bigint()
-  const windows = nops.GetAllWindowNames()
+  const windows = await nops.GetAllWindowNames()
   const end = process.hrtime.bigint()
   const duration = Number(end - start) / 1000000
   console.log(`Test enumerating all windows: ${duration}ms`)
@@ -30,9 +30,11 @@ function testGetAllWindowNames() {
   console.log('Test Done')
 }
 
-console.log('Starting test...')
-nops.SetLogLevel(1)
-TestGetAllProcessNames()
-testGetAppWindowNames()
-testGetAllWindowNames()
-console.log('Test now running async')
+;(async () => {
+  console.log('Starting test...')
+  nops.SetLogLevel(1)
+  await testGetAllProcessNames()
+  await testGetAppWindowNames()
+  await testGetAllWindowNames()
+  console.log('Test now running async')
+})()
