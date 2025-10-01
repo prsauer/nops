@@ -25,6 +25,7 @@ async function TestGetAllWindowNames() {
 }
 
 console.log('Starting test...')
+nops.SetLogLevel(400)
 TestGetAllProcessNames()
 TestGetAppWindowNames()
 TestGetAllWindowNames()

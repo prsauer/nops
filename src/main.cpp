@@ -4,8 +4,15 @@
 #include "utils.h"
 #include <cstdarg>
 #include <cstdio>
+#include <vector>
+#include <string>
+
+int g_logLevel = 0; // Default log level to no logs
 
 void blog(int level, const char *format, ...) {
+  if (level > g_logLevel) {
+    return;
+  }
   const char *levelStr = "";
   switch (level) {
   case LOG_INFO:
@@ -55,6 +62,11 @@ BOOL CALLBACK EnumAllWindowsProc(HWND hwnd, LPARAM lParam) {
 
   // Show window info even if no title
   const char *title = (titleLength > 0) ? windowTitle : "<No Title>";
+
+  if (lParam) {
+    std::vector<std::string> *windowNames = reinterpret_cast<std::vector<std::string> *>(lParam);
+    windowNames->push_back(title);
+  }
 
   // Check if it's a child window
   HWND parent = GetParent(hwnd);
@@ -119,6 +131,11 @@ BOOL CALLBACK EnumWindowsProc(HWND hwnd, LPARAM lParam) {
     return TRUE;
   }
 
+  if (lParam) {
+    std::vector<std::string> *windowNames = reinterpret_cast<std::vector<std::string> *>(lParam);
+    windowNames->push_back(windowTitle);
+  }
+
   // Get window class name for additional info
   // char className[256];
   // GetClassNameA(hwnd, className, sizeof(className));
@@ -171,27 +188,54 @@ Napi::Value GetAllProcessNames(const Napi::CallbackInfo &info) {
 Napi::Value GetAppWindowNames(const Napi::CallbackInfo &info) {
   blog(LOG_INFO, "Enumerating all main application windows...");
 
+  std::vector<std::string> windowNames;
+
   // Enumerate all top-level windows
-  EnumWindows(EnumWindowsProc, 0);
+  EnumWindows(EnumWindowsProc, reinterpret_cast<LPARAM>(&windowNames));
 
   blog(LOG_INFO, "Window enumeration complete");
-  return info.Env().Undefined();
+
+  Napi::Env env = info.Env();
+  Napi::Array result = Napi::Array::New(env, windowNames.size());
+  for (size_t i = 0; i < windowNames.size(); ++i) {
+    result[i] = Napi::String::New(env, windowNames[i]);
+  }
+  return result;
 }
 
 Napi::Value GetAllWindowNames(const Napi::CallbackInfo &info) {
   blog(LOG_INFO, "Enumerating ALL visible windows (verbose mode)...");
 
+  std::vector<std::string> windowNames;
+
   // Enumerate all windows with minimal filtering
-  EnumWindows(EnumAllWindowsProc, 0);
+  EnumWindows(EnumAllWindowsProc, reinterpret_cast<LPARAM>(&windowNames));
 
   blog(LOG_INFO, "Verbose window enumeration complete");
-  return info.Env().Undefined();
+
+  Napi::Env env = info.Env();
+  Napi::Array result = Napi::Array::New(env, windowNames.size());
+  for (size_t i = 0; i < windowNames.size(); ++i) {
+    result[i] = Napi::String::New(env, windowNames[i]);
+  }
+  return result;
+}
+
+Napi::Value SetLogLevel(const Napi::CallbackInfo &info) {
+  Napi::Env env = info.Env();
+  if (info.Length() < 1 || !info[0].IsNumber()) {
+    Napi::TypeError::New(env, "Number expected").ThrowAsJavaScriptException();
+    return env.Undefined();
+  }
+  g_logLevel = info[0].As<Napi::Number>().Int32Value();
+  return env.Undefined();
 }
 
 Napi::Object Init(Napi::Env env, Napi::Object exports) {
   exports.Set("GetAllProcessNames", Napi::Function::New(env, GetAllProcessNames));
   exports.Set("GetAppWindowNames", Napi::Function::New(env, GetAppWindowNames));
   exports.Set("GetAllWindowNames", Napi::Function::New(env, GetAllWindowNames));
+  exports.Set("SetLogLevel", Napi::Function::New(env, SetLogLevel));
 
   return exports;
 }
