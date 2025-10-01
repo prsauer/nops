@@ -4,7 +4,6 @@
         "cflags!": [ "-fno-exceptions" ],
         "cflags_cc!": [ "-fno-exceptions" ],
         "sources": [
-            "src/utils.cpp",
             "src/main.cpp",
         ],
         'include_dirs': [

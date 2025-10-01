@@ -1,7 +1,5 @@
 #pragma once
 
-std::string get_current_date_time();
-
 enum {
 	/**
 	 * Use if there's a problem that can potentially affect the program,
