@@ -15,7 +15,8 @@
   "scripts": {
     "build": "node-gyp rebuild && node dist.js",
     "configure-cursor-anysphere": "node-gyp configure -- -f compile_commands_json && copy build\\Release\\compile_commands.json src\\compile_commands.json",
-    "test": "node test/procs.js"
+    "btest": "pnpm build && ts-node test/procs.ts",
+    "test": "ts-node test/procs.ts"
   },
   "devDependencies": {
     "@types/node": "^24.1.0",
