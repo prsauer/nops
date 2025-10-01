@@ -15,8 +15,10 @@ async function testGetAppWindowNames() {
   const windows = await nops.GetAppWindowNames()
   const end = process.hrtime.bigint()
   const duration = Number(end - start) / 1000000
-  console.log(`Test enumerating all app windows: ${duration}ms`)
+  const maybeWoWExe = windows.find((window) => window.executable.toLowerCase().includes('wow.exe'))
+  console.log(`Test enumerating APP windows: ${duration}ms`)
   console.log(`${windows.length} windows found, first executable: ${windows[0].executable}, title: ${windows[0].title}`)
+  console.log(`Maybe WoW executable: ${maybeWoWExe?.executable}, title: ${maybeWoWExe?.title}`)
   console.log('Test Done')
 }
 
@@ -25,8 +27,10 @@ async function testGetAllWindowNames() {
   const windows = await nops.GetAllWindowNames()
   const end = process.hrtime.bigint()
   const duration = Number(end - start) / 1000000
-  console.log(`Test enumerating all windows: ${duration}ms`)
+  const maybeWoWExe = windows.find((window) => window.executable.toLowerCase().includes('wow.exe'))
+  console.log(`Test enumerating ALL windows: ${duration}ms`)
   console.log(`${windows.length} windows found, first executable: ${windows[0].executable}, title: ${windows[0].title}`)
+  console.log(`Maybe WoW executable: ${maybeWoWExe?.executable}, title: ${maybeWoWExe?.title}`)
   console.log('Test Done')
 }
 

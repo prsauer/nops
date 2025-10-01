@@ -127,10 +127,11 @@ BOOL IsMainWindow(HWND hwnd) {
     return FALSE;
   }
 
+  // Commented out: Games often don't have these
   // Must have minimize/maximize buttons or be a dialog (typical main windows)
-  if (!(style & WS_MINIMIZEBOX) && !(style & WS_MAXIMIZEBOX) && !(style & DS_MODALFRAME)) {
-    return FALSE;
-  }
+  //   if (!(style & WS_MINIMIZEBOX) && !(style & WS_MAXIMIZEBOX) && !(style & DS_MODALFRAME)) {
+  //     return FALSE;
+  //   }
 
   return TRUE;
 }
