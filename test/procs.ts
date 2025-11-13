@@ -15,10 +15,10 @@ async function testGetAppWindowNames() {
   const windows = await nops.GetAppWindowNames()
   const end = process.hrtime.bigint()
   const duration = Number(end - start) / 1000000
-  const maybeWoWExe = windows.find((window) => window.executable.toLowerCase().includes('wow.exe'))
+  const maybeWoWExe = windows.find((window) => window.executable.toLowerCase().includes('fcadefbneo.exe'))
   console.log(`Test enumerating APP windows: ${duration}ms`)
   console.log(`${windows.length} windows found, first executable: ${windows[0].executable}, title: ${windows[0].title}`)
-  console.log(`Maybe WoW executable: ${maybeWoWExe?.executable}, title: ${maybeWoWExe?.title}`)
+  console.log(`Maybe Target executable: ${maybeWoWExe?.executable}, title: ${maybeWoWExe?.title}`)
   console.log('Test Done')
 }
 
@@ -27,16 +27,16 @@ async function testGetAllWindowNames() {
   const windows = await nops.GetAllWindowNames()
   const end = process.hrtime.bigint()
   const duration = Number(end - start) / 1000000
-  const maybeWoWExe = windows.find((window) => window.executable.toLowerCase().includes('wow.exe'))
+  const maybeWoWExe = windows.find((window) => window.executable.toLowerCase().includes('fcadefbneo.exe'))
   console.log(`Test enumerating ALL windows: ${duration}ms`)
   console.log(`${windows.length} windows found, first executable: ${windows[0].executable}, title: ${windows[0].title}`)
-  console.log(`Maybe WoW executable: ${maybeWoWExe?.executable}, title: ${maybeWoWExe?.title}`)
+  console.log(`Maybe Target executable: ${maybeWoWExe?.executable}, title: ${maybeWoWExe?.title}`)
   console.log('Test Done')
 }
 
 ;(async () => {
   console.log('Starting test...')
-  nops.SetLogLevel(1)
+  nops.SetLogLevel(400)
   await testGetAllProcessNames()
   await testGetAppWindowNames()
   await testGetAllWindowNames()
