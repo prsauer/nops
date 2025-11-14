@@ -31,6 +31,13 @@ export function GetAppWindowNames(): Promise<WindowInfo[]>
 export function GetAllWindowNames(): Promise<WindowInfo[]>
 
 /**
+ * Retrieves the count of UDP ports for a specific process.
+ * @param processName - The name of the process to check.
+ * @returns A promise that resolves to the number of UDP ports.
+ */
+export function GetProcessUdpPorts(processName: string): Promise<number[]>
+
+/**
  * Sets the global log level for the native module. Logs to console.
  * Default is 0 (no logs).
  * @param level - The log level to set.

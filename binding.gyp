@@ -6,13 +6,17 @@
         "sources": [
             "src/main.cpp",
             "src/wincalls.cpp",
-            "src/workers.cpp"
+            "src/workers.cpp",
+            "src/net.cpp"
         ],
         'include_dirs': [
             "<!@(node -p \"require('node-addon-api').include\")",
             "include"
         ],
-        'libraries': [],
+        'libraries': [
+            "iphlpapi.lib",
+            "psapi.lib"
+        ],
         'dependencies': [
             "<!(node -p \"require('node-addon-api').gyp\")"
         ],

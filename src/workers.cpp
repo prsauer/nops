@@ -1,7 +1,12 @@
 #include "workers.h"
+#include "wincalls.h"
+#include "utils.h"
+#include "net.h"
 #include <napi.h>
 #include <windows.h>
 #include <psapi.h>
+#include <codecvt>
+#include <locale>
 
 // AppWindowNamesWorker implementation
 AppWindowNamesWorker::AppWindowNamesWorker(Napi::Env env)
@@ -91,3 +96,33 @@ void ProcessNamesWorker::OnOK() {
 void ProcessNamesWorker::OnError(const Napi::Error &e) { deferred.Reject(e.Value()); }
 
 Napi::Promise ProcessNamesWorker::GetPromise() { return deferred.Promise(); }
+
+// UdpPortsWorker implementation
+UdpPortsWorker::UdpPortsWorker(Napi::Env &env, const std::string &processName)
+    : Napi::AsyncWorker(env), m_deferred(Napi::Promise::Deferred::New(env)), m_processName(processName) {}
+
+void UdpPortsWorker::Execute() {
+  std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>> converter;
+  std::wstring wideProcessName = converter.from_bytes(m_processName);
+
+  DWORD processId = GetProcessIdByName(wideProcessName);
+  if (processId != 0) {
+    m_ports = GetUdpPortsForProcess(processId);
+  } else {
+    std::string errorMsg = "Process not found: " + m_processName;
+    SetError(errorMsg);
+  }
+}
+
+void UdpPortsWorker::OnOK() {
+  Napi::Env env = Env();
+  Napi::Array arr = Napi::Array::New(env, m_ports.size());
+  for (size_t i = 0; i < m_ports.size(); i++) {
+    arr[i] = Napi::Number::New(env, m_ports[i]);
+  }
+  m_deferred.Resolve(arr);
+}
+
+Napi::Promise UdpPortsWorker::GetPromise() {
+  return m_deferred.Promise();
+}

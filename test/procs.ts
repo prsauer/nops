@@ -34,11 +34,28 @@ async function testGetAllWindowNames() {
   console.log('Test Done')
 }
 
+async function testUdpPorts() {
+  const start = process.hrtime.bigint()
+  const ports = await nops.GetProcessUdpPorts('PioneerGame.exe')
+  const end = process.hrtime.bigint()
+  const duration = Number(end - start) / 1000000
+  console.log(`Test UDP port count: ${duration}ms`)
+  console.log(`PioneerGame.exe UDP ports: ${ports.length}`)
+  console.log(`Ports: ${ports.join(', ')}`)
+  if (ports.length !== 47) {
+    console.error(`Expected 47 ports, but got ${ports.length}`)
+  } else {
+    console.log('UDP port count test passed!')
+  }
+  console.log('Test Done')
+}
+
 ;(async () => {
   console.log('Starting test...')
   nops.SetLogLevel(400)
   await testGetAllProcessNames()
   await testGetAppWindowNames()
   await testGetAllWindowNames()
+  await testUdpPorts()
   console.log('Test now running async')
 })()

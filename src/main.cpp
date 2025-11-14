@@ -27,6 +27,18 @@ Napi::Value GetAllWindowNames(const Napi::CallbackInfo &info) {
   return worker->GetPromise();
 }
 
+Napi::Value GetProcessUdpPorts(const Napi::CallbackInfo &info) {
+  Napi::Env env = info.Env();
+  if (info.Length() < 1 || !info[0].IsString()) {
+    Napi::TypeError::New(env, "String expected").ThrowAsJavaScriptException();
+    return env.Undefined();
+  }
+  std::string processName = info[0].As<Napi::String>().Utf8Value();
+  UdpPortsWorker *worker = new UdpPortsWorker(env, processName);
+  worker->Queue();
+  return worker->GetPromise();
+}
+
 Napi::Value SetLogLevel(const Napi::CallbackInfo &info) {
   Napi::Env env = info.Env();
   if (info.Length() < 1 || !info[0].IsNumber()) {
@@ -41,6 +53,7 @@ Napi::Object Init(Napi::Env env, Napi::Object exports) {
   exports.Set("GetAllProcessNames", Napi::Function::New(env, GetAllProcessNames));
   exports.Set("GetAppWindowNames", Napi::Function::New(env, GetAppWindowNames));
   exports.Set("GetAllWindowNames", Napi::Function::New(env, GetAllWindowNames));
+  exports.Set("GetProcessUdpPorts", Napi::Function::New(env, GetProcessUdpPorts));
   exports.Set("SetLogLevel", Napi::Function::New(env, SetLogLevel));
 
   return exports;

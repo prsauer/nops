@@ -45,3 +45,19 @@ private:
   Napi::Promise::Deferred deferred;
   std::vector<std::string> processNames;
 };
+
+class UdpPortsWorker : public Napi::AsyncWorker {
+public:
+  UdpPortsWorker(Napi::Env &env, const std::string &processName);
+  ~UdpPortsWorker() {};
+
+  void Execute() override;
+  void OnOK() override;
+
+  Napi::Promise GetPromise();
+
+private:
+  Napi::Promise::Deferred m_deferred;
+  std::string m_processName;
+  std::vector<int> m_ports;
+};
