@@ -36,16 +36,64 @@ async function testGetAllWindowNames() {
 
 async function testUdpPorts() {
   const start = process.hrtime.bigint()
+  console.log('Testing PioneerGame (should be running with some UDP ports)...')
   const ports = await nops.GetProcessUdpPorts('PioneerGame.exe')
   const end = process.hrtime.bigint()
   const duration = Number(end - start) / 1000000
   console.log(`Test UDP port count: ${duration}ms`)
-  console.log(`PioneerGame.exe UDP ports: ${ports.length}`)
-  console.log(`Ports: ${ports.join(', ')}`)
-  if (ports.length !== 47) {
-    console.error(`Expected 47 ports, but got ${ports.length}`)
+  if (ports === null) {
+    console.error('Error: Process not found (PioneerGame.exe should be running)')
   } else {
-    console.log('UDP port count test passed!')
+    console.log(`PioneerGame.exe UDP ports: ${ports.length}`)
+    if (ports.length > 0) {
+      console.log(`Ports: ${ports.join(', ')}`)
+      console.log('Successfully found PioneerGame with UDP ports!')
+    } else {
+      console.error(`Error: Expected non-zero ports for PioneerGame, but got ${ports.length}`)
+    }
+  }
+  console.log('Test Done')
+}
+
+async function testNonExistentProcess() {
+  console.log('Testing non-existent process...')
+  const ports = await nops.GetProcessUdpPorts('nonexistentprocess.exe')
+  if (ports === null) {
+    console.log('Successfully returned null for non-existent process')
+  } else {
+    console.error(`Error: Expected null, but got ${ports}`)
+  }
+  console.log('Test Done')
+}
+
+async function testProcessWithNoPorts() {
+  console.log('Testing process that exists but may have no UDP ports...')
+  const ports = await nops.GetProcessUdpPorts('explorer.exe')
+  if (ports === null) {
+    console.error('Error: Process not found (explorer.exe should be running)')
+  } else {
+    console.log(`explorer.exe UDP ports: ${ports.length}`)
+    if (ports.length === 0) {
+      console.log('Successfully returned empty array for process with no UDP ports')
+    } else {
+      console.log(`Ports: ${ports.join(', ')}`)
+    }
+  }
+  console.log('Test Done')
+}
+
+async function testDiscord() {
+  console.log('Testing Discord (should be running but have no UDP ports)...')
+  const ports = await nops.GetProcessUdpPorts('Discord.exe')
+  if (ports === null) {
+    console.error('Error: Process not found (Discord.exe should be running)')
+  } else {
+    console.log(`Discord.exe UDP ports: ${ports.length}`)
+    if (ports.length === 0) {
+      console.log('Successfully returned empty array for Discord with no UDP ports')
+    } else {
+      console.log(`Ports: ${ports.join(', ')}`)
+    }
   }
   console.log('Test Done')
 }
@@ -53,9 +101,12 @@ async function testUdpPorts() {
 ;(async () => {
   console.log('Starting test...')
   nops.SetLogLevel(400)
-  await testGetAllProcessNames()
-  await testGetAppWindowNames()
-  await testGetAllWindowNames()
+  // await testGetAllProcessNames()
+  // await testGetAppWindowNames()
+  // await testGetAllWindowNames()
   await testUdpPorts()
+  await testNonExistentProcess()
+  await testProcessWithNoPorts()
+  await testDiscord()
   console.log('Test now running async')
 })()

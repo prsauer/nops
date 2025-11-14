@@ -60,4 +60,5 @@ private:
   Napi::Promise::Deferred m_deferred;
   std::string m_processName;
   std::vector<int> m_ports;
+  bool m_processFound;
 };

@@ -1,7 +1,6 @@
 #include <napi.h>
-#include <windows.h>
-#include <psapi.h>
 #include "wincalls.h"
+#include <psapi.h>
 #include "workers.h"
 
 int g_logLevel = 0; // Default log level to no logs

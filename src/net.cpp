@@ -41,13 +41,16 @@ std::vector<int> GetUdpPortsForProcess(DWORD processId) {
   }
 
   DWORD udpTableSize = 0;
-  GetExtendedUdpTable(NULL, &udpTableSize, FALSE, AF_INET, UDP_TABLE_OWNER_PID, 0);
+  if (GetExtendedUdpTable(NULL, &udpTableSize, FALSE, AF_INET, UDP_TABLE_OWNER_PID, 0) != ERROR_INSUFFICIENT_BUFFER) {
+    blog(LOG_ERROR, "GetExtendedUdpTable failed to get size");
+    return ports;
+  }
 
   std::vector<BYTE> udpTableBuffer(udpTableSize);
   PMIB_UDPTABLE_OWNER_PID pUdpTable = reinterpret_cast<PMIB_UDPTABLE_OWNER_PID>(udpTableBuffer.data());
 
   if (GetExtendedUdpTable(pUdpTable, &udpTableSize, FALSE, AF_INET, UDP_TABLE_OWNER_PID, 0) != NO_ERROR) {
-    blog(LOG_ERROR, "GetExtendedUdpTable failed");
+    blog(LOG_ERROR, "GetExtendedUdpTable failed to get table");
     return ports;
   }
 
